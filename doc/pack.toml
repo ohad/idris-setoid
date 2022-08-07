@@ -1,4 +1,10 @@
-[doc.setoid]
+[custom.all.setoid]
 type = "local"
 path = ".."
 ipkg = "setoid.ipkg"
+
+[custom.all.frex]
+type = "github"
+url = "https://github.com/frex-project/idris-frex"
+commit = "latest:main"
+ipkg = "frex.ipkg"
