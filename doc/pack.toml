@@ -1,0 +1,4 @@
+[doc.setoid]
+type = "local"
+path = ".."
+ipkg = "setoid.ipkg"
