@@ -1,13 +1,13 @@
-all: Tutorial.md
+all: Tutorial.html
 
-.PHONY: all ttms
+.PHONY:
 
 ttms:
 	pack build setoid-doc.ipkg
 
-%.md: .PHONY
-	pack run katla markdown --config ./setoid-doc-style.dhall sources/$*.md ./build/ttc/$*.ttm > $*.md
-	pandoc $*.md -o $*.html
+%.html: .PHONY
+	pack run katla markdown --config ./setoid-doc-style.dhall sources/$*.md ./build/ttc/$*.ttm \
+  | pandoc -o $*.html
 
 install-deps:
 	pack install-deps setoid-doc.ipkg
