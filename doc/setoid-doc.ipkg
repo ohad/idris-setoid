@@ -19,6 +19,7 @@ depends
   , frex
 modules
   = Tutorial
+  , Minh
 
 -- name of executable
 sourcedir = "sources"

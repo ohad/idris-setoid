@@ -251,3 +251,70 @@ Ex4 =
 ```
 The outer lists agree on `1` and `2`, respectively, but they can't overlap on
 on the first element of either, which exhausts all possibilities of overlap.
+
+
+
+```idris
+-- TODO: clean this up
+(.+.) : (x, y : INT) -> INT
+x .+. y = (x.pos + y.pos) .-. (x.neg + y.neg)
+
+(.*.) : (x, y : INT) -> INT
+x .*. y = (x.pos * y.pos + x.neg * y.neg) .-. (x.pos * y.neg + x.neg * y.pos)
+
+O, I : INT
+O = 0 .-. 0
+I = 1 .-. 0
+plusIntZeroLftNeutral : (x : INT) -> O .+. x `SameDiff` x
+plusIntZeroLftNeutral x = Check Refl
+
+plusIntZeroRgtNeutral : (x : INT) -> x .+. O `SameDiff` x
+plusIntZeroRgtNeutral x = Check (solve 2 Monoid.Commutative.Free.Free
+                                     {a = Nat.Additive} $
+                                     (X 0 .+. O1) .+. X 1
+                                 =-= X 0 .+. (X 1 .+. O1))
+
+plusInrAssociative : (x,y,z : INT) -> x .+. (y .+. z) `SameDiff` (x .+. y) .+. z
+plusInrAssociative x y z = Check $ (solve 6 Monoid.Commutative.Free.Free
+                                     {a = Nat.Additive} $
+                                  (X 0 .+. (X 1 .+. X 2)) .+. ((X 3 .+. X 4) .+. X 5)
+                                  =-= (X 0 .+. X 1 .+. X 2) .+. (X 3 .+. (X 4 .+. X 5)))
+
+data INT' : Type where
+  IPos  : Nat -> INT'
+  INegS : Nat -> INT'
+
+Cast INT' Integer where
+  cast (IPos k) = cast k
+  cast (INegS k) = - cast (S k)
+
+Cast INT' INT where
+  cast (IPos k) = k .-. 0
+  cast (INegS k) = 0 .-. (S k)
+
+normalise : INT -> INT
+normalise i@(0 .-. neg      ) = i
+normalise i@((S k) .-. 0    ) = i
+normalise i@((S k) .-. (S j)) = normalise (k .-. j)
+
+normaliseEitherZero : (x : INT) -> Either ((normalise x).pos = Z) ((normalise x).neg = Z)
+normaliseEitherZero i@(0 .-. neg      ) = Left Refl
+normaliseEitherZero i@((S k) .-. 0    ) = Right Refl
+normaliseEitherZero i@((S k) .-. (S j)) = normaliseEitherZero (k .-. j)
+
+Cast INT INT' where
+  cast x = let (pos .-. neg) = normalise x in
+    case normaliseEitherZero x of
+      (Left y) => case neg of
+        0 => IPos 0
+        (S k) => INegS k
+      (Right y) => IPos pos
+
+-- stuff you can show:
+
+-- x `SameDiff` y -> normalise x = normalise y
+(:*:), (:+:) : (x,y : INT') -> INT'
+x :+: y = cast (cast x .+. cast y)
+x :*: y = cast (cast x .*. cast y)
+
+```

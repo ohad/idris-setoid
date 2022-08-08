@@ -241,34 +241,101 @@ setoid package doesn't use them, we'll use them in a few examples.
 
 The `Overlap` relation from Examples 1 and 2 is symmetric:
 <code class="IdrisCode">
-Symm<span class="IdrisKeyword">e</span>tric&nbsp;(List&nbsp;a)&nbsp;Overlap&nbsp;where<br />
-&nbsp;&nbsp;symmetric&nbsp;xs\_overlaps\_ys&nbsp;=&nbsp;Overlapping<br />
-&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;common&nbsp;=&nbsp;xs\_overlaps\_ys.common<br />
-&nbsp;&nbsp;&nbsp;&nbsp;,&nbsp;lhsPos&nbsp;=&nbsp;xs\_overlaps\_ys.rhsPos<br />
-&nbsp;&nbsp;&nbsp;&nbsp;,&nbsp;rhsPos&nbsp;=&nbsp;xs\_overlaps\_ys.lhsPos<br />
-&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<span class="IdrisType">Symmetric</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisType">List</span>&nbsp;<span class="IdrisBound">a</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisType">Overlap</span>&nbsp;<span class="IdrisKeyword">where</span><br />
+&nbsp;&nbsp;<span class="IdrisFunction">symmetric</span>&nbsp;<span class="IdrisBound">xs\_overlaps\_ys</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisData">Overlapping</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisKeyword">{</span>&nbsp;<span class="IdrisBound">common</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisBound">xs\_overlaps\_ys</span><span class="IdrisFunction">.common</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisKeyword">,</span>&nbsp;<span class="IdrisBound">lhsPos</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisBound">xs\_overlaps\_ys</span><span class="IdrisFunction">.rhsPos</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisKeyword">,</span>&nbsp;<span class="IdrisBound">rhsPos</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisBound">xs\_overlaps\_ys</span><span class="IdrisFunction">.lhsPos</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisKeyword">}</span><br />
 </code>
 However, `Overlap` is neither reflexive nor transitive:
 
 * The empty list doesn't overlap with itself:
 <code class="IdrisCode">
-Ex3&nbsp;:&nbsp;Not&nbsp;(Overlap&nbsp;[]&nbsp;[])<br />
-Ex3&nbsp;nil\_overlaps\_nil&nbsp;=&nbsp;case&nbsp;nil\_overlaps\_nil.lhsPos&nbsp;of<br />
-<span class="IdrisFunction">&nbsp;&nbsp;\_</span>&nbsp;<span class="IdrisKeyword">i</span>m<span class="IdrisKeyword">p</span>o<span class="IdrisType">ssible</span><br />
+<span class="IdrisFunction">Ex3</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisFunction">Not</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisType">Overlap</span>&nbsp;<span class="IdrisData">[]</span>&nbsp;<span class="IdrisData">[]</span><span class="IdrisKeyword">)</span><br />
+<span class="IdrisFunction">Ex3</span>&nbsp;<span class="IdrisBound">nil\_overlaps\_nil</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisKeyword">case</span>&nbsp;<span class="IdrisBound">nil\_overlaps\_nil</span><span class="IdrisFunction">.lhsPos</span>&nbsp;<span class="IdrisKeyword">of</span><br />
+&nbsp;&nbsp;<span class="IdrisKeyword">\_</span>&nbsp;<span class="IdrisKeyword">impossible</span><br />
 </code>
 
 * Two lists may overlap with a middle list, but on different elements. For example:
 <code class="IdrisCode">
-Ex<span class="IdrisData">4</span>&nbsp;<span class="IdrisData">:&nbsp;(&nbsp;Overlap</span>&nbsp;<span class="IdrisData">[</span>1<span class="IdrisKeyword">]</span><span class="IdrisData">&nbsp;[1,2</span>]<br />
-&nbsp;&nbsp;<span class="IdrisData">&nbsp;</span>&nbsp;<span class="IdrisKeyword">&nbsp;</span>&nbsp;<span class="IdrisBound">,&nbsp;Overlap&nbsp;[1,2]&nbsp;</span>[<span class="IdrisKeyword">2]</span><br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisData">&nbsp;,&nbsp;No</span>t<span class="IdrisKeyword">&nbsp;</span>(<span class="IdrisKeyword">Overlap&nbsp;[1</span>]&nbsp;[2]))<br />
-Ex<span class="IdrisKeyword">4</span>&nbsp;=<br />
-&nbsp;&nbsp;(&nbsp;Overlapping&nbsp;1&nbsp;Here&nbsp;Here<br />
-&nbsp;&nbsp;,&nbsp;Overlapping&nbsp;2&nbsp;(There&nbsp;Here)&nbsp;Here<br />
-&nbsp;&nbsp;,&nbsp;\&nbsp;one\_overlaps\_two&nbsp;=&gt;&nbsp;case&nbsp;one\_overlaps\_two.lhsPos&nbsp;of<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;There&nbsp;\_&nbsp;impossible<br />
-&nbsp;&nbsp;)<br />
+<span class="IdrisFunction">Ex4</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisKeyword">(</span>&nbsp;<span class="IdrisType">Overlap</span>&nbsp;<span class="IdrisData">[1]</span>&nbsp;<span class="IdrisData">[1,2]</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisType">,</span>&nbsp;<span class="IdrisType">Overlap</span>&nbsp;<span class="IdrisData">[1,2]</span>&nbsp;<span class="IdrisData">[2]</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisType">,</span>&nbsp;<span class="IdrisFunction">Not</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisType">Overlap</span>&nbsp;<span class="IdrisData">[1]</span>&nbsp;<span class="IdrisData">[2]</span><span class="IdrisKeyword">))</span><br />
+<span class="IdrisFunction">Ex4</span>&nbsp;<span class="IdrisKeyword">=</span><br />
+&nbsp;&nbsp;<span class="IdrisKeyword">(</span>&nbsp;<span class="IdrisData">Overlapping</span>&nbsp;<span class="IdrisData">1</span>&nbsp;<span class="IdrisData">Here</span>&nbsp;<span class="IdrisData">Here</span><br />
+&nbsp;&nbsp;<span class="IdrisData">,</span>&nbsp;<span class="IdrisData">Overlapping</span>&nbsp;<span class="IdrisData">2</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisData">There</span>&nbsp;<span class="IdrisData">Here</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisData">Here</span><br />
+&nbsp;&nbsp;<span class="IdrisData">,</span>&nbsp;<span class="IdrisKeyword">\</span>&nbsp;<span class="IdrisBound">one\_overlaps\_two</span>&nbsp;<span class="IdrisKeyword">=&gt;</span>&nbsp;<span class="IdrisKeyword">case</span>&nbsp;<span class="IdrisBound">one\_overlaps\_two</span><span class="IdrisFunction">.lhsPos</span>&nbsp;<span class="IdrisKeyword">of</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisData">There</span>&nbsp;<span class="IdrisKeyword">\_</span>&nbsp;<span class="IdrisKeyword">impossible</span><br />
+&nbsp;&nbsp;<span class="IdrisKeyword">)</span><br />
 </code>
 The outer lists agree on `1` and `2`, respectively, but they can't overlap on
 on the first element of either, which exhausts all possibilities of overlap.
+
+
+
+<code class="IdrisCode">
+<span class="IdrisBound">-</span>-<span class="IdrisFunction">&nbsp;TO</span>D<span class="IdrisBound">O</span>:<span class="IdrisKeyword">&nbsp;</span>c<span class="IdrisKeyword">l</span><span class="IdrisBound">e</span><span class="IdrisFunction">an&nbsp;t</span>h<span class="IdrisFunction">i</span>s<span class="IdrisBound">&nbsp;</span><span class="IdrisFunction">up</span><br />
+(.+.)&nbsp;:&nbsp;(x,&nbsp;y&nbsp;:&nbsp;INT)&nbsp;-&gt;&nbsp;INT<br />
+<span class="IdrisFunction">x&nbsp;.+.</span>&nbsp;<span class="IdrisKeyword">y</span>&nbsp;<span class="IdrisKeyword">=</span><span class="IdrisBound">&nbsp;</span><span class="IdrisKeyword">(</span>x<span class="IdrisBound">.</span>p<span class="IdrisKeyword">o</span>s<span class="IdrisType">&nbsp;+&nbsp;</span><span class="IdrisKeyword">y</span>.<span class="IdrisKeyword">po</span>s<span class="IdrisType">)&nbsp;.</span>-.&nbsp;(x.neg&nbsp;+&nbsp;y.neg)<br />
+<br />
+(.\*.)&nbsp;:&nbsp;(x,&nbsp;y&nbsp;:&nbsp;INT)&nbsp;-&gt;&nbsp;INT<br />
+<span class="IdrisFunction">x</span><span class="IdrisKeyword">&nbsp;</span>.<span class="IdrisFunction">\*</span>.<span class="IdrisKeyword">&nbsp;</span>y<span class="IdrisType">&nbsp;=&nbsp;</span>(x.pos&nbsp;\*&nbsp;y.pos&nbsp;+&nbsp;x.neg&nbsp;\*&nbsp;y.neg)&nbsp;.-.&nbsp;(x.pos&nbsp;\*&nbsp;y.neg&nbsp;+&nbsp;x.neg&nbsp;\*&nbsp;y.pos)<br />
+<br />
+<span class="IdrisFunction">O</span>,<span class="IdrisKeyword">&nbsp;</span>I<span class="IdrisData">&nbsp;</span>:<span class="IdrisData">&nbsp;IN</span>T<br />
+<span class="IdrisFunction">O&nbsp;=&nbsp;0&nbsp;.-.&nbsp;0</span><br />
+<span class="IdrisFunction">I&nbsp;=&nbsp;1&nbsp;.-.&nbsp;0</span><br />
+plusIntZeroLftNeutral&nbsp;:&nbsp;(x&nbsp;:&nbsp;INT)&nbsp;-&gt;&nbsp;O&nbsp;.+.&nbsp;x&nbsp;`SameDiff`&nbsp;x<br />
+<span class="IdrisFunction">plusIntZeroLftNeutral</span>&nbsp;<span class="IdrisKeyword">x</span>&nbsp;<span class="IdrisKeyword">=</span><span class="IdrisBound">&nbsp;</span>C<span class="IdrisKeyword">h</span>e<span class="IdrisType">ck&nbsp;</span><span class="IdrisKeyword">R</span>e<span class="IdrisKeyword">fl</span><br />
+<br />
+plusIntZeroRgtNeutral&nbsp;:&nbsp;(x&nbsp;:&nbsp;INT)&nbsp;-&gt;&nbsp;<span class="IdrisKeyword">x</span><span class="IdrisBound">&nbsp;</span>.<span class="IdrisKeyword">+</span>.<span class="IdrisFunction">&nbsp;O&nbsp;`SameDiff</span><span class="IdrisKeyword">`</span>&nbsp;x<br />
+plusIntZeroRgtNeutral&nbsp;x&nbsp;=&nbsp;Check&nbsp;(solv<span class="IdrisKeyword">e</span><span class="IdrisFunction">&nbsp;</span>2<span class="IdrisData">&nbsp;</span>M<span class="IdrisFunction">ono</span>i<span class="IdrisFunction">d.</span><span class="IdrisKeyword">C</span>o<span class="IdrisFunction">mmu</span>t<span class="IdrisFunction">a</span>t<span class="IdrisData">i</span>ve.Free.Free<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisFunction">&nbsp;&nbsp;&nbsp;</span>&nbsp;<span class="IdrisFunction">{</span>a<span class="IdrisData">&nbsp;</span>=<span class="IdrisFunction">&nbsp;Na</span>t<span class="IdrisKeyword">.</span><span class="IdrisFunction">A</span>d<span class="IdrisData">d</span>i<span class="IdrisFunction">tiv</span>e<span class="IdrisFunction">}&nbsp;</span><span class="IdrisKeyword">$</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(X&nbsp;0&nbsp;.+.&nbsp;O1)&nbsp;.+.&nbsp;X&nbsp;1<br />
+<span class="IdrisFunction">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;<span class="IdrisKeyword">&nbsp;</span>&nbsp;<span class="IdrisKeyword">&nbsp;</span><span class="IdrisBound">&nbsp;</span><span class="IdrisKeyword">&nbsp;</span><span class="IdrisBound">&nbsp;</span><span class="IdrisKeyword">&nbsp;</span><span class="IdrisBound">&nbsp;</span>&nbsp;<span class="IdrisKeyword">&nbsp;</span>&nbsp;<span class="IdrisType">&nbsp;&nbsp;&nbsp;</span><span class="IdrisKeyword">=</span>-<span class="IdrisKeyword">=&nbsp;</span>X<span class="IdrisBound">&nbsp;</span>0<span class="IdrisFunction">&nbsp;.+</span>.<span class="IdrisKeyword">&nbsp;</span><span class="IdrisBound">(</span>X<span class="IdrisFunction">&nbsp;1&nbsp;</span>.<span class="IdrisBound">+</span><span class="IdrisKeyword">.</span>&nbsp;<span class="IdrisType">O1))</span><br />
+<br />
+plusInrAssociative&nbsp;:&nbsp;(x,y,z&nbsp;:&nbsp;INT)&nbsp;-&gt;<span class="IdrisKeyword">&nbsp;</span><span class="IdrisBound">x</span>&nbsp;<span class="IdrisKeyword">.</span>+<span class="IdrisFunction">.&nbsp;(y&nbsp;.+.&nbsp;z)&nbsp;</span><span class="IdrisKeyword">`</span>SameDiff`&nbsp;(x&nbsp;.+.&nbsp;y)&nbsp;.+.&nbsp;z<br />
+plusInrAssociative&nbsp;x&nbsp;y&nbsp;z&nbsp;=&nbsp;Check&nbsp;$<span class="IdrisKeyword">&nbsp;</span><span class="IdrisFunction">(</span>s<span class="IdrisData">o</span>l<span class="IdrisFunction">ve&nbsp;</span>6<span class="IdrisKeyword">&nbsp;</span><span class="IdrisFunction">M</span>o<span class="IdrisData">n</span>o<span class="IdrisFunction">id.</span>C<span class="IdrisFunction">o</span>m<span class="IdrisData">m</span><span class="IdrisKeyword">ut</span>a<span class="IdrisFunction">tiv</span>e<span class="IdrisKeyword">.F</span><span class="IdrisFunction">r</span>e<span class="IdrisData">e</span>.<span class="IdrisFunction">Fre</span>e<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisFunction">&nbsp;&nbsp;&nbsp;</span>{<span class="IdrisKeyword">a</span><span class="IdrisFunction">&nbsp;</span>=<span class="IdrisData">&nbsp;</span>N<span class="IdrisFunction">at.</span>A<span class="IdrisFunction">d</span>d<span class="IdrisData">i</span>t<span class="IdrisFunction">ive</span>}<span class="IdrisFunction">&nbsp;</span>$<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(X&nbsp;0&nbsp;.+.&nbsp;(X&nbsp;1&nbsp;.+.&nbsp;X&nbsp;2))&nbsp;.+.&nbsp;((X&nbsp;3&nbsp;.+.&nbsp;X&nbsp;4)&nbsp;.+.&nbsp;X&nbsp;5)<br />
+<span class="IdrisKeyword">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;<span class="IdrisType">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;<span class="IdrisKeyword">&nbsp;</span>&nbsp;<span class="IdrisType">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;<span class="IdrisKeyword">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=-=&nbsp;(X&nbsp;0&nbsp;.+.&nbsp;X&nbsp;1&nbsp;.+.&nbsp;X&nbsp;2)&nbsp;.+.&nbsp;(X&nbsp;3&nbsp;.+.&nbsp;(X&nbsp;4&nbsp;.+.&nbsp;X&nbsp;5)))<br />
+<br />
+da<span class="IdrisData">ta&nbsp;IN</span>T<span class="IdrisKeyword">&apos;</span>&nbsp;<span class="IdrisType">:&nbsp;T</span>y<span class="IdrisKeyword">pe</span>&nbsp;<span class="IdrisType">wher</span>e<br />
+&nbsp;&nbsp;IPos&nbsp;&nbsp;:&nbsp;Nat&nbsp;-&gt;&nbsp;INT&apos;<br />
+<span class="IdrisType">&nbsp;&nbsp;IN</span>e<span class="IdrisType">gS&nbsp;:</span>&nbsp;<span class="IdrisType">Nat&nbsp;-&gt;&nbsp;</span>I<span class="IdrisKeyword">NT&apos;</span><br />
+<br />
+Ca<span class="IdrisFunction">st&nbsp;I</span>N<span class="IdrisKeyword">T</span><span class="IdrisData">&apos;&nbsp;Int</span>e<span class="IdrisBound">g</span><span class="IdrisKeyword">e</span>r<span class="IdrisKeyword">&nbsp;</span>w<span class="IdrisFunction">h</span>e<span class="IdrisFunction">re</span><br />
+&nbsp;&nbsp;cast&nbsp;(IPos&nbsp;k)&nbsp;=&nbsp;cast&nbsp;k<br />
+<span class="IdrisType">&nbsp;&nbsp;ca</span>s<span class="IdrisType">t&nbsp;(I</span>N<span class="IdrisType">egS</span>&nbsp;<span class="IdrisKeyword">k)&nbsp;=&nbsp;</span>-&nbsp;cast&nbsp;(S&nbsp;k)<br />
+<br />
+Ca<span class="IdrisFunction">st&nbsp;I</span>N<span class="IdrisKeyword">T</span><span class="IdrisData">&apos;&nbsp;INT</span>&nbsp;<span class="IdrisBound">w</span><span class="IdrisKeyword">h</span>e<span class="IdrisKeyword">r</span>e<br />
+&nbsp;&nbsp;cast&nbsp;(IPos&nbsp;k)&nbsp;=&nbsp;k&nbsp;.-.&nbsp;0<br />
+<span class="IdrisFunction">&nbsp;&nbsp;cast&nbsp;(I</span>N<span class="IdrisKeyword">e</span>g<span class="IdrisType">S&nbsp;k</span>)<span class="IdrisKeyword">&nbsp;=</span>&nbsp;<span class="IdrisType">0&nbsp;.</span>-.&nbsp;(S&nbsp;k)<br />
+<br />
+<span class="IdrisFunction">normalise</span>&nbsp;<span class="IdrisBound">:</span><span class="IdrisKeyword">&nbsp;IN</span><span class="IdrisData">T</span>&nbsp;<span class="IdrisBound">-</span><span class="IdrisKeyword">&gt;</span>&nbsp;<span class="IdrisData">INT</span><br />
+<span class="IdrisFunction">normalise</span>&nbsp;<span class="IdrisBound">i</span><span class="IdrisKeyword">@(0</span><span class="IdrisData">&nbsp;</span>.<span class="IdrisBound">-</span><span class="IdrisKeyword">.</span>&nbsp;<span class="IdrisData">neg</span>&nbsp;<span class="IdrisKeyword">&nbsp;</span><span class="IdrisData">&nbsp;</span>&nbsp;<span class="IdrisBound">&nbsp;</span><span class="IdrisKeyword">&nbsp;)</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisFunction">i</span><br />
+normalise&nbsp;i@((S&nbsp;k)&nbsp;.-.&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;=&nbsp;i<br />
+<span class="IdrisFunction">normalise&nbsp;i@((S&nbsp;k)&nbsp;</span>.<span class="IdrisKeyword">-</span>.<span class="IdrisKeyword">&nbsp;</span><span class="IdrisBound">(</span>S<span class="IdrisKeyword">&nbsp;</span>j<span class="IdrisType">))&nbsp;</span><span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisKeyword">no</span>r<span class="IdrisType">malise</span>&nbsp;<span class="IdrisKeyword">(k</span><span class="IdrisFunction">&nbsp;.-.&nbsp;j)</span><br />
+<br />
+<span class="IdrisFunction">normaliseEitherZero</span>&nbsp;<span class="IdrisBound">:</span><span class="IdrisKeyword">&nbsp;(x</span><span class="IdrisData">&nbsp;</span>:<span class="IdrisBound">&nbsp;</span><span class="IdrisKeyword">I</span>N<span class="IdrisData">T)&nbsp;</span>-<span class="IdrisData">&gt;</span>&nbsp;Eit<span class="IdrisKeyword">h</span>e<span class="IdrisKeyword">r</span>&nbsp;<span class="IdrisData">((nor</span>m<span class="IdrisData">alis</span>e&nbsp;x).pos&nbsp;=&nbsp;Z)&nbsp;((normalise&nbsp;x).neg&nbsp;=&nbsp;Z)<br />
+<span class="IdrisFunction">normaliseEitherZero</span>&nbsp;<span class="IdrisBound">i</span><span class="IdrisKeyword">@(0</span><span class="IdrisData">&nbsp;</span>.<span class="IdrisBound">-</span><span class="IdrisKeyword">.</span>&nbsp;<span class="IdrisData">neg</span>&nbsp;<span class="IdrisKeyword">&nbsp;</span><span class="IdrisData">&nbsp;</span>&nbsp;<span class="IdrisBound">&nbsp;</span><span class="IdrisKeyword">&nbsp;)</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisFunction">Left&nbsp;Refl</span><br />
+normaliseEitherZero&nbsp;i@((S&nbsp;k)&nbsp;.-.&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;=&nbsp;Right&nbsp;Refl<br />
+<span class="IdrisType">norm</span>a<span class="IdrisType">lis</span>e<span class="IdrisType">Eith</span>e<span class="IdrisKeyword">rZero</span>&nbsp;i@((S&nbsp;k)&nbsp;.-.&nbsp;(S&nbsp;j))&nbsp;=&nbsp;normaliseEitherZero&nbsp;(k&nbsp;.-.&nbsp;j)<br />
+<br />
+Cast<span class="IdrisKeyword">&nbsp;INT</span>&nbsp;<span class="IdrisFunction">INT&apos;&nbsp;where</span><br />
+&nbsp;&nbsp;cast<span class="IdrisKeyword">&nbsp;</span><span class="IdrisData">x&nbsp;=&nbsp;</span>l<span class="IdrisBound">e</span><span class="IdrisKeyword">t</span>&nbsp;<span class="IdrisKeyword">(p</span>o<span class="IdrisKeyword">s&nbsp;.-</span>.<span class="IdrisBound">&nbsp;ne</span>g<span class="IdrisKeyword">)&nbsp;</span>=&nbsp;normalise&nbsp;x&nbsp;in<br />
+&nbsp;&nbsp;&nbsp;&nbsp;case<span class="IdrisData">&nbsp;</span>n<span class="IdrisKeyword">or</span>m<span class="IdrisData">alis</span>e<span class="IdrisData">E</span>itherZero&nbsp;x&nbsp;of<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(L<span class="IdrisKeyword">e</span><span class="IdrisData">f</span>t<span class="IdrisBound">&nbsp;</span><span class="IdrisKeyword">y</span>)<span class="IdrisKeyword">&nbsp;=</span>&gt;<span class="IdrisData">&nbsp;case</span>&nbsp;<span class="IdrisBound">n</span>eg&nbsp;of<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisKeyword">&nbsp;</span><span class="IdrisData">&nbsp;0&nbsp;=&gt;</span>&nbsp;<span class="IdrisBound">I</span><span class="IdrisKeyword">P</span>o<span class="IdrisKeyword">s&nbsp;</span>0<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(S&nbsp;k)&nbsp;=&gt;&nbsp;INegS&nbsp;k<br />
+<span class="IdrisComment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Right&nbsp;y)&nbsp;=&gt;&nbsp;IPo</span>s&nbsp;pos<br />
+<br />
+<span class="IdrisComment">--&nbsp;stuff&nbsp;you&nbsp;can&nbsp;show:</span><br />
+<br />
+<span class="IdrisBound">-</span>-<span class="IdrisFunction">&nbsp;x&nbsp;</span>`<span class="IdrisBound">S</span>a<span class="IdrisKeyword">m</span>e<span class="IdrisFunction">Diff</span>`<span class="IdrisKeyword">&nbsp;</span><span class="IdrisFunction">y&nbsp;-&gt;</span>&nbsp;<span class="IdrisBound">n</span>o<span class="IdrisFunction">rma</span>l<span class="IdrisFunction">ise&nbsp;</span>x<span class="IdrisBound">&nbsp;</span><span class="IdrisKeyword">=</span>&nbsp;normalise&nbsp;y<br />
+<span class="IdrisBound">(</span>:<span class="IdrisFunction">\*:)</span>,<span class="IdrisBound">&nbsp;</span>(<span class="IdrisKeyword">:</span>+<span class="IdrisFunction">:)&nbsp;:</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisFunction">x,y&nbsp;</span>:<span class="IdrisBound">&nbsp;</span>I<span class="IdrisFunction">NT&apos;</span>)<span class="IdrisFunction">&nbsp;-&gt;&nbsp;</span>I<span class="IdrisBound">N</span><span class="IdrisKeyword">T</span>&apos;<br />
+x&nbsp;:+:&nbsp;y&nbsp;=&nbsp;cast&nbsp;(cast&nbsp;x&nbsp;.+.&nbsp;cast&nbsp;y)<br />
+x&nbsp;:\*:&nbsp;y&nbsp;=&nbsp;cast&nbsp;(cast&nbsp;x&nbsp;.\*.&nbsp;cast&nbsp;y)<br />
+<br />
+</code>
 
