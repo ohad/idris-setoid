@@ -220,15 +220,19 @@ This proof is a lot more involved:
 
 1. We appeal to the cancellation property of addition:
   $a + c = b + c \Rightarrow a = b$
+
+  This construction relies crucially on the cancellation property. Later, we
+  will learn about its general form, called the INT-construction.
+
 2. We rearrange the term, bringing the appropriate part of `y` into contact with
   the appropriate part of `z` and `x` to transform the term.
 
-Here we use the idris library [`Frex`](http://www.github.com/frex-project/idris-frex)
-that can perform such routine
-rearrangements for common algebraic structures. In this case, we use the
-commutative monoid simplifier from `Frex`.
-If you want to read more about `Frex`, check the
-[paper](https://www.denotational.co.uk/drafts/allais-brady-corbyn-kammar-yallop-frex-dependently-typed-algebraic-simplification.pdf) out.
+  Here we use the idris library [`Frex`](http://www.github.com/frex-project/idris-frex)
+  that can perform such routine
+  rearrangements for common algebraic structures. In this case, we use the
+  commutative monoid simplifier from `Frex`.
+  If you want to read more about `Frex`, check the
+  [paper](https://www.denotational.co.uk/drafts/allais-brady-corbyn-kammar-yallop-frex-dependently-typed-algebraic-simplification.pdf) out.
 
 
 Idris's `Control.Relation` defines interfaces for properties like reflexivity
@@ -237,32 +241,32 @@ setoid package doesn't use them, we'll use them in a few examples.
 
 The `Overlap` relation from Examples 1 and 2 is symmetric:
 <code class="IdrisCode">
-Sy<span class="IdrisFunction">mmetric&nbsp;(</span>L<span class="IdrisBound">ist&nbsp;a)&nbsp;Overlap</span>&nbsp;<span class="IdrisKeyword">w</span>h<span class="IdrisData">ere</span><br />
-&nbsp;&nbsp;sy<span class="IdrisKeyword">m</span>m<span class="IdrisBound">etric&nbsp;</span>x<span class="IdrisKeyword">s</span>\_<span class="IdrisBound">overlaps\_ys&nbsp;=&nbsp;</span><span class="IdrisFunction">Overlap</span>ping<br />
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisKeyword">{</span>&nbsp;<span class="IdrisBound">common</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisBound">xs\_overlaps\_ys</span><span class="IdrisFunction">.common</span><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisKeyword">,</span>&nbsp;<span class="IdrisBound">lhsPos</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisBound">xs\_overlaps\_ys</span><span class="IdrisFunction">.rhsPos</span><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisKeyword">,</span>&nbsp;rhsPos&nbsp;=&nbsp;xs\_overlaps\_ys.lhsPos<br />
+Symm<span class="IdrisKeyword">e</span>tric&nbsp;(List&nbsp;a)&nbsp;Overlap&nbsp;where<br />
+&nbsp;&nbsp;symmetric&nbsp;xs\_overlaps\_ys&nbsp;=&nbsp;Overlapping<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;common&nbsp;=&nbsp;xs\_overlaps\_ys.common<br />
+&nbsp;&nbsp;&nbsp;&nbsp;,&nbsp;lhsPos&nbsp;=&nbsp;xs\_overlaps\_ys.rhsPos<br />
+&nbsp;&nbsp;&nbsp;&nbsp;,&nbsp;rhsPos&nbsp;=&nbsp;xs\_overlaps\_ys.lhsPos<br />
 &nbsp;&nbsp;&nbsp;&nbsp;}<br />
 </code>
 However, `Overlap` is neither reflexive nor transitive:
 
 * The empty list doesn't overlap with itself:
 <code class="IdrisCode">
-<span class="IdrisFunction">Ex3</span>&nbsp;<span class="IdrisBound">:&nbsp;Not&nbsp;(Overlap&nbsp;[</span>]<span class="IdrisKeyword">&nbsp;</span>[<span class="IdrisKeyword">])</span><br />
-Ex<span class="IdrisKeyword">3</span>&nbsp;<span class="IdrisKeyword">nil\_overla</span>ps\_nil&nbsp;=&nbsp;case&nbsp;nil\_overlaps\_nil.lhsPos&nbsp;of<br />
-&nbsp;&nbsp;\_&nbsp;impossible<br />
+Ex3&nbsp;:&nbsp;Not&nbsp;(Overlap&nbsp;[]&nbsp;[])<br />
+Ex3&nbsp;nil\_overlaps\_nil&nbsp;=&nbsp;case&nbsp;nil\_overlaps\_nil.lhsPos&nbsp;of<br />
+<span class="IdrisFunction">&nbsp;&nbsp;\_</span>&nbsp;<span class="IdrisKeyword">i</span>m<span class="IdrisKeyword">p</span>o<span class="IdrisType">ssible</span><br />
 </code>
 
 * Two lists may overlap with a middle list, but on different elements. For example:
 <code class="IdrisCode">
-Ex4&nbsp;:&nbsp;<span class="IdrisType">(</span>&nbsp;<span class="IdrisType">Overlap</span>&nbsp;<span class="IdrisData">[1]&nbsp;[</span>1<span class="IdrisData">,2]</span><br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisType">,</span>&nbsp;<span class="IdrisFunction">Ove</span>r<span class="IdrisKeyword">l</span><span class="IdrisType">ap&nbsp;[1,2</span>]<span class="IdrisData">&nbsp;[2</span>]<br />
-<span class="IdrisFunction">&nbsp;&nbsp;&nbsp;</span>&nbsp;<span class="IdrisKeyword">&nbsp;</span>&nbsp;,&nbsp;Not&nbsp;(Overlap&nbsp;[1]&nbsp;[2]))<br />
-Ex<span class="IdrisKeyword">4</span>&nbsp;<span class="IdrisData">=</span><br />
-&nbsp;&nbsp;<span class="IdrisData">(</span>&nbsp;<span class="IdrisData">Overlapping</span>&nbsp;<span class="IdrisData">1</span>&nbsp;<span class="IdrisKeyword">H</span><span class="IdrisData">ere&nbsp;H</span>e<span class="IdrisData">re</span><br />
-&nbsp;&nbsp;<span class="IdrisData">,</span>&nbsp;<span class="IdrisKeyword">O</span>v<span class="IdrisBound">erlapping&nbsp;2&nbsp;(The</span>r<span class="IdrisKeyword">e&nbsp;</span>H<span class="IdrisKeyword">ere)</span>&nbsp;<span class="IdrisBound">Here</span><br />
-&nbsp;&nbsp;,&nbsp;\<span class="IdrisData">&nbsp;one\_</span>o<span class="IdrisKeyword">v</span>e<span class="IdrisKeyword">rlaps\_two&nbsp;</span>=&gt;&nbsp;case&nbsp;one\_overlaps\_two.lhsPos&nbsp;of<br />
-&nbsp;&nbsp;<span class="IdrisKeyword">&nbsp;</span>&nbsp;&nbsp;There&nbsp;\_&nbsp;impossible<br />
+Ex<span class="IdrisData">4</span>&nbsp;<span class="IdrisData">:&nbsp;(&nbsp;Overlap</span>&nbsp;<span class="IdrisData">[</span>1<span class="IdrisKeyword">]</span><span class="IdrisData">&nbsp;[1,2</span>]<br />
+&nbsp;&nbsp;<span class="IdrisData">&nbsp;</span>&nbsp;<span class="IdrisKeyword">&nbsp;</span>&nbsp;<span class="IdrisBound">,&nbsp;Overlap&nbsp;[1,2]&nbsp;</span>[<span class="IdrisKeyword">2]</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisData">&nbsp;,&nbsp;No</span>t<span class="IdrisKeyword">&nbsp;</span>(<span class="IdrisKeyword">Overlap&nbsp;[1</span>]&nbsp;[2]))<br />
+Ex<span class="IdrisKeyword">4</span>&nbsp;=<br />
+&nbsp;&nbsp;(&nbsp;Overlapping&nbsp;1&nbsp;Here&nbsp;Here<br />
+&nbsp;&nbsp;,&nbsp;Overlapping&nbsp;2&nbsp;(There&nbsp;Here)&nbsp;Here<br />
+&nbsp;&nbsp;,&nbsp;\&nbsp;one\_overlaps\_two&nbsp;=&gt;&nbsp;case&nbsp;one\_overlaps\_two.lhsPos&nbsp;of<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;There&nbsp;\_&nbsp;impossible<br />
 &nbsp;&nbsp;)<br />
 </code>
 The outer lists agree on `1` and `2`, respectively, but they can't overlap on

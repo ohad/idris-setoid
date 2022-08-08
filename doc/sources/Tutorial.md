@@ -200,15 +200,19 @@ This proof is a lot more involved:
 
 1. We appeal to the cancellation property of addition:
   $a + c = b + c \Rightarrow a = b$
+
+  This construction relies crucially on the cancellation property. Later, we
+  will learn about its general form, called the INT-construction.
+
 2. We rearrange the term, bringing the appropriate part of `y` into contact with
   the appropriate part of `z` and `x` to transform the term.
 
-Here we use the idris library [`Frex`](http://www.github.com/frex-project/idris-frex)
-that can perform such routine
-rearrangements for common algebraic structures. In this case, we use the
-commutative monoid simplifier from `Frex`.
-If you want to read more about `Frex`, check the
-[paper](https://www.denotational.co.uk/drafts/allais-brady-corbyn-kammar-yallop-frex-dependently-typed-algebraic-simplification.pdf) out.
+  Here we use the idris library [`Frex`](http://www.github.com/frex-project/idris-frex)
+  that can perform such routine
+  rearrangements for common algebraic structures. In this case, we use the
+  commutative monoid simplifier from `Frex`.
+  If you want to read more about `Frex`, check the
+  [paper](https://www.denotational.co.uk/drafts/allais-brady-corbyn-kammar-yallop-frex-dependently-typed-algebraic-simplification.pdf) out.
 
 
 Idris's `Control.Relation` defines interfaces for properties like reflexivity
