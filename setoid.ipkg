@@ -18,16 +18,16 @@ depends
 
 -- modules to install
 modules
-  = Data.Setoid
+  = Data.Fun.Nary
+  , Data.Setoid
   , Data.Setoid.Definition
   , Data.Setoid.Either
+  , Data.Setoid.List
   , Data.Setoid.Pair
   , Data.Setoid.Vect
   , Data.Setoid.Vect.Functional
   , Data.Setoid.Vect.Inductive
-  , Data.Setoid.List
   , Syntax.PreorderReasoning.Setoid
-  , Data.Fun.Nary
 
 -- main file (i.e. file to load at REPL)
 -- main =
