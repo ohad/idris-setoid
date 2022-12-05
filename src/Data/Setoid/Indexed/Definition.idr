@@ -3,7 +3,7 @@ module Data.Setoid.Indexed.Definition
 
 import public Control.Relation
 
-import public Data.Setoid.Definition as Setoid
+import public Data.Setoid.Definition
 
 import Syntax.PreorderReasoning.Setoid
 
