@@ -707,16 +707,101 @@ natural numbers $(\mathbb N, (+), 0, (\cdot), 1)$, we can similarly uniformly
 construct the multiplicative integers and the resulting ring.
 
 ## Transporting structure
+The isomorphism `INTSetoid <~> INTEGERSetoid` is compatible with the various
+arithmetic operators in the following way:
 <code class="IdrisCode">
-<span class="IdrisKeyword">0</span>&nbsp;<span class="IdrisFunction">BinOp</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisType">Setoid</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisType">Type</span><br />
-<span class="IdrisFunction">BinOp</span>&nbsp;<span class="IdrisBound">a</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">a</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">a</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">a</span><span class="IdrisKeyword">)</span><br />
+<span class="IdrisKeyword">record</span>&nbsp;<span class="IdrisType">BinOp</span>&nbsp;<span class="IdrisKeyword">where</span><br />
+&nbsp;&nbsp;constructor&nbsp;<span class="IdrisData">Op</span><br />
+&nbsp;&nbsp;<span class="IdrisFunction">setoid</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisType">Setoid</span><br />
+&nbsp;&nbsp;<span class="IdrisFunction">op</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">setoid</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">setoid</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">setoid</span><span class="IdrisKeyword">)</span><br />
 <br />
-<span class="IdrisKeyword">0</span>&nbsp;<span class="IdrisFunction">Preserves</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisType">(</span><span class="IdrisBound">a</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisType">Setoid</span>&nbsp;<span class="IdrisType">\*\*</span>&nbsp;<span class="IdrisFunction">BinOp</span>&nbsp;<span class="IdrisBound">a</span><span class="IdrisType">)</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisType">(</span><span class="IdrisBound">b</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisType">Setoid</span>&nbsp;<span class="IdrisType">\*\*</span>&nbsp;<span class="IdrisFunction">BinOp</span>&nbsp;<span class="IdrisBound">b</span><span class="IdrisType">)</span>&nbsp;<span class="IdrisKeyword">-&gt;</span><br />
-&nbsp;&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">a</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">b</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisType">Type</span><br />
-<span class="IdrisKeyword">(</span>(<span class="IdrisBound">a</span>&nbsp;<span class="IdrisData">\*\*</span>&nbsp;<span class="IdrisBound">fa</span>)&nbsp;<span class="IdrisFunction">`Preserves`</span>&nbsp;(<span class="IdrisBound">b</span>&nbsp;<span class="IdrisData">\*\*</span>&nbsp;<span class="IdrisBound">fb</span>)<span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisBound">h</span>&nbsp;<span class="IdrisKeyword">=</span><br />
-&nbsp;&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisBound">x</span><span class="IdrisKeyword">,</span><span class="IdrisBound">y</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">a</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisBound">h</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisBound">x</span>&nbsp;<span class="IdrisBound">`fa`</span>&nbsp;<span class="IdrisBound">y</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisBound">h</span>&nbsp;<span class="IdrisBound">x</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisBound">`fb`</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisBound">h</span>&nbsp;<span class="IdrisBound">y</span><span class="IdrisKeyword">)</span><br />
+<span class="IdrisKeyword">0</span>&nbsp;<span class="IdrisFunction">Compatible</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisBound">opa</span><span class="IdrisKeyword">,</span>&nbsp;<span class="IdrisBound">opb</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisType">BinOp</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">-&gt;</span><br />
+&nbsp;&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">opa</span><span class="IdrisFunction">.setoid</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">opb</span><span class="IdrisFunction">.setoid</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisType">Type</span><br />
+<span class="IdrisKeyword">((</span><span class="IdrisData">Op</span>&nbsp;<span class="IdrisBound">a</span>&nbsp;<span class="IdrisBound">fa</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisFunction">`Compatible`</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisData">Op</span>&nbsp;<span class="IdrisBound">b</span>&nbsp;<span class="IdrisBound">fb</span><span class="IdrisKeyword">))</span>&nbsp;<span class="IdrisBound">h</span>&nbsp;<span class="IdrisKeyword">=</span><br />
+&nbsp;&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisBound">x</span><span class="IdrisKeyword">,</span><span class="IdrisBound">y</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisFunction">U</span>&nbsp;<span class="IdrisBound">a</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">-&gt;</span>&nbsp;<span class="IdrisBound">b</span><span class="IdrisFunction">.equivalence.relation</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisBound">h</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisBound">x</span>&nbsp;<span class="IdrisBound">`fa`</span>&nbsp;<span class="IdrisBound">y</span><span class="IdrisKeyword">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisKeyword">((</span><span class="IdrisBound">h</span>&nbsp;<span class="IdrisBound">x</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisBound">`fb`</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisBound">h</span>&nbsp;<span class="IdrisBound">y</span><span class="IdrisKeyword">))</span><br />
 <br />
-<span class="IdrisComment">--toINTisAddHomo&nbsp;:&nbsp;(INTSetoid&nbsp;\*\*&nbsp;(+))</span><br />
+<span class="IdrisFunction">toINTisAddHomo</span>&nbsp;<span class="IdrisKeyword">:</span><br />
+&nbsp;&nbsp;<span class="IdrisKeyword">((</span><span class="IdrisData">Op</span>&nbsp;<span class="IdrisFunction">INTEGERSetoid</span>&nbsp;<span class="IdrisFunction">(+)</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisFunction">`Compatible`</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisData">Op</span>&nbsp;<span class="IdrisFunction">INTSetoid</span>&nbsp;<span class="IdrisFunction">(+)</span><span class="IdrisKeyword">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisFunction">ToINT</span><span class="IdrisKeyword">)</span><span class="IdrisFunction">.H</span><br />
+</code>
+To show it, we'll follow the definition of `toINT`, first show that
+`ANat_Plus_NegS` is compatible:
+<code class="IdrisCode">
+<span class="IdrisFunction">compatibleANAT\_Plus\_NegS</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisBound">k1</span><span class="IdrisKeyword">,</span><span class="IdrisBound">k2</span><span class="IdrisKeyword">,</span><span class="IdrisBound">j1</span><span class="IdrisKeyword">,</span><span class="IdrisBound">j1</span>&nbsp;<span class="IdrisKeyword">:</span>&nbsp;<span class="IdrisType">Nat</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">-&gt;</span><br />
+&nbsp;&nbsp;?IamHERE&nbsp;<span class="IdrisComment">--toINT&nbsp;(ANat\_Plus\_NegS&nbsp;(k1&nbsp;+&nbsp;k2)&nbsp;(1&nbsp;+&nbsp;j1&nbsp;+&nbsp;j2))</span><br />
+<br />
+<br />
+<span class="IdrisFunction">toINTisAddHomo</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisData">ANat</span>&nbsp;<span class="IdrisBound">k</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisData">ANat</span>&nbsp;<span class="IdrisBound">j</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;?toINTisAddHomo\_rhs\_2<br />
+<span class="IdrisFunction">toINTisAddHomo</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisData">ANat</span>&nbsp;<span class="IdrisBound">k</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisData">NegS</span>&nbsp;<span class="IdrisBound">j</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;?toINTisAddHomo\_rhs\_3<br />
+<span class="IdrisFunction">toINTisAddHomo</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisData">NegS</span>&nbsp;<span class="IdrisBound">j</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisData">ANat</span>&nbsp;<span class="IdrisBound">k</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;?toINTisAddHomo\_rhs\_4<br />
+<span class="IdrisFunction">toINTisAddHomo</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisData">NegS</span>&nbsp;<span class="IdrisBound">j</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">(</span><span class="IdrisData">NegS</span>&nbsp;<span class="IdrisBound">k</span><span class="IdrisKeyword">)</span>&nbsp;<span class="IdrisKeyword">=</span>&nbsp;?toINTisAddHomo\_rhs\_5<br />
+<br />
+<br />
 <br />
 </code>
+-- TODO: clean this up
+(.+.) : (x, y : INT) -> INT
+x .+. y = (x.pos + y.pos) .-. (x.neg + y.neg)
+
+(.*.) : (x, y : INT) -> INT
+x .*. y = (x.pos * y.pos + x.neg * y.neg) .-. (x.pos * y.neg + x.neg * y.pos)
+
+O, I : INT
+O = 0 .-. 0
+I = 1 .-. 0
+plusIntZeroLftNeutral : (x : INT) -> O .+. x `SameDiff` x
+plusIntZeroLftNeutral x = Check Refl
+
+plusIntZeroRgtNeutral : (x : INT) -> x .+. O `SameDiff` x
+plusIntZeroRgtNeutral x = Check (solve 2 Monoid.Commutative.Free.Free
+                                     {a = Nat.Additive} $
+                                     (X 0 .+. O1) .+. X 1
+                                 =-= X 0 .+. (X 1 .+. O1))
+
+plusInrAssociative : (x,y,z : INT) -> x .+. (y .+. z) `SameDiff` (x .+. y) .+. z
+plusInrAssociative x y z = Check $ (solve 6 Monoid.Commutative.Free.Free
+                                     {a = Nat.Additive} $
+                                  (X 0 .+. (X 1 .+. X 2)) .+. ((X 3 .+. X 4) .+. X 5)
+                                  =-= (X 0 .+. X 1 .+. X 2) .+. (X 3 .+. (X 4 .+. X 5)))
+
+data INT' : Type where
+  IPos  : Nat -> INT'
+  INegS : Nat -> INT'
+
+Cast INT' Integer where
+  cast (IPos k) = cast k
+  cast (INegS k) = - cast (S k)
+
+Cast INT' INT where
+  cast (IPos k) = k .-. 0
+  cast (INegS k) = 0 .-. (S k)
+
+normalise : INT -> INT
+normalise i@(0 .-. neg      ) = i
+normalise i@((S k) .-. 0    ) = i
+normalise i@((S k) .-. (S j)) = normalise (k .-. j)
+
+normaliseEitherZero : (x : INT) -> Either ((normalise x).pos = Z) ((normalise x).neg = Z)
+normaliseEitherZero i@(0 .-. neg      ) = Left Refl
+normaliseEitherZero i@((S k) .-. 0    ) = Right Refl
+normaliseEitherZero i@((S k) .-. (S j)) = normaliseEitherZero (k .-. j)
+
+Cast INT INT' where
+  cast x = let (pos .-. neg) = normalise x in
+    case normaliseEitherZero x of
+      (Left y) => case neg of
+        0 => IPos 0
+        (S k) => INegS k
+      (Right y) => IPos pos
+
+-- stuff you can show:
+
+-- x `SameDiff` y -> normalise x = normalise y
+(:*:), (:+:) : (x,y : INT') -> INT'
+x :+: y = cast (cast x .+. cast y)
+x :*: y = cast (cast x .*. cast y)
+
+```
 
