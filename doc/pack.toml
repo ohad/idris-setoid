@@ -3,8 +3,19 @@ type = "local"
 path = ".."
 ipkg = "setoid.ipkg"
 
+# [custom.all.frex]
+# type = "github"
+# url = "https://github.com/frex-project/idris-frex"
+# commit = "latest:main"
+# ipkg = "frex.ipkg"
+
 [custom.all.frex]
-type = "github"
-url = "https://github.com/frex-project/idris-frex"
-commit = "latest:main"
+type = "local"
+path = "/home/ohad/dev/idris-frex"
 ipkg = "frex.ipkg"
+
+
+#[custom.all.katla]
+#type = "local"
+#path = "/home/ohad/dev/katla"
+#ipkg = "katla.ipkg"

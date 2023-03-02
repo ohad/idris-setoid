@@ -2,6 +2,7 @@
 module Data.Setoid.Pair
 
 import Data.Setoid.Definition
+import Data.Setoid.Isomorphism
 import Data.Setoid.Either
 
 %default total
