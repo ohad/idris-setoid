@@ -23,6 +23,8 @@ modules
   , Data.Setoid.Definition
   , Data.Setoid.Isomorphism
   , Data.Setoid.Either
+  , Data.Setoid.Indexed
+  , Data.Setoid.Indexed.Definition
   , Data.Setoid.Pair
   , Data.Setoid.Vect
   , Data.Setoid.Vect.Functional
