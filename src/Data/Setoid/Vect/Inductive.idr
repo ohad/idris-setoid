@@ -4,7 +4,6 @@ module Data.Setoid.Vect.Inductive
 import Data.Setoid.Definition
 
 import Data.Vect
-import Data.HVect
 import Data.Vect.Properties
 
 %default total
