@@ -24,6 +24,8 @@ modules
   , Data.Setoid.Definition
   , Data.Setoid.Isomorphism
   , Data.Setoid.Either
+  , Data.Setoid.Indexed
+  , Data.Setoid.Indexed.Definition
   , Data.Setoid.List
   , Data.Setoid.Pair
   , Data.Setoid.Vect
