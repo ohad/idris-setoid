@@ -2,7 +2,7 @@ module Data.Relation.Equivalence
 
 import public Control.Relation
 import public Control.Order
-import Data.Vect
+import public Data.Vect
 import public Data.Fun.Nary
 
 import public Data.Setoid.Notation
@@ -45,8 +45,8 @@ e1 /\ e2 = MkEquivalence
 public export
 record PreorderData A (rel : Rel A) where
   constructor MkPreorderData
-  reflexive : (x : A) -> rel x x
-  transitive : (x,y,z : A) -> rel x y -> rel y z -> rel x z
+  reflexivePreorder : (x : A) -> rel x x
+  transitivePreorder : (x,y,z : A) -> rel x y -> rel y z -> rel x z
 
 public export
 [PreorderWorkaround] (Reflexive ty rel, Transitive ty rel) => Preorder ty rel where
@@ -55,14 +55,14 @@ public export
 MkPreorderWorkaround : {preorderData : PreorderData ty rel} -> Order.Preorder ty rel
 MkPreorderWorkaround {preorderData} =
   let reflexiveArg = MkReflexive {ty, rel} $
-                     lam Hidden (\y => rel y y) preorderData.reflexive
+                     lam Hidden (\y => rel y y) preorderData.reflexivePreorder
       transitiveArg = MkTransitive {ty} {rel} $
                       Nary.curry 3 Hidden
                        (\[x,y,z] =>
                          x `rel` y ->
                          y `rel` z ->
                          x `rel` z)
-                       (\[x,y,z] => preorderData.transitive _ _ _)
+                       (\[x,y,z] => preorderData.transitivePreorder _ _ _)
 
   in PreorderWorkaround
 

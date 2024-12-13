@@ -1,6 +1,8 @@
 ||| Basic definition and notation for setoids
 module Data.Setoid.Definition
 
+import public Control.Relation
+
 import public Data.Relation.Equivalence
 
 %default total
@@ -9,7 +11,7 @@ public export
 record Setoid where
   constructor MkSetoid
   0 U : Type
-  equivalence : Equivalence U
+  equivalence : Data.Relation.Equivalence.Equivalence U
 
 public export
 reflect : (a : Setoid) -> {x, y : U a} -> x = y -> a.equivalence.relation x y

@@ -14,23 +14,38 @@ pre code {
 ```idris hide
 module Tutorial
 
-import Data.Setoid
+import Control.Relation
+
 import Syntax.PreorderReasoning
-import Syntax.PreorderReasoning.Setoid
 import Data.List.Elem
 import Data.List
 import Data.Nat
 import Data.Vect
+import Data.Vect.Properties
 import Data.Fin
+import Data.Relation
 import Data.Relation.Equivalence
 import Frex
+import Frex.Free
+import Frex.Free.Construction
 import Frex.Algebra
+import Frex.Model
 import Frexlet.Monoid
 import Frexlet.Monoid.Commutative
 import Notation.Additive
 import Frexlet.Monoid.Notation.Additive
 import Frexlet.Monoid.Commutative.Nat
 import Syntax.WithProof
+import Data.Setoid
+import Data.Setoid.Definition
+import Data.Setoid.Vect.Inductive
+import Syntax.PreorderReasoning.Setoid
+
+import Frex.Signature
+import Frex.Presentation
+import Frex.Algebra
+import Frex.Model
+import Frex.Powers
 
 %default total
 ```
@@ -54,12 +69,15 @@ If you want to see the source-code behind this tutorial, check the
 ## Equivalence relations
 
 A _relation_ over a type `ty` in Idris is any two-argument type-valued function:
+```idris hide
+namespace Hidden
+```
 ```idris
-Rel : Type -> Type
-Rel ty = ty -> ty -> Type
+ --Rel : Type -> Type
+ --Rel ty = ty -> ty -> Type
 ```
 ```idris hide
-%hide Tutorial.Rel
+ --%hide Tutorial.Hidden.Rel
 ```
 This definition and its associated interfaces ship with idris's standard
 library. Given a relation `rel : Rel ty` and `x,y : ty`, we can form
@@ -122,41 +140,42 @@ An _equivalence relation_ is a relation that's:
 
 * _transitive_: we can compose paths of related elements into a single edge.
 
-```idris
-record Equivalence (A : Type) where
-  constructor MkEquivalence
-  0 relation: Rel A
-  reflexive : (x       : A) -> relation x x
-  symmetric : (x, y    : A) -> relation x y -> relation y x
-  transitive: (x, y, z : A) -> relation x y -> relation y z
-                            -> relation x z
-```
 ```idris hide
-%hide Tutorial.Equivalence
-%hide Tutorial.MkEquivalence
-%hide Tutorial.Equivalence.relation
+namespace Hidden
+-- %hide Data.Relation.Equivalence.Equivalence
+```
+```idris
+ -- record Equivalence (A : Type) where
+ --   constructor MkEquivalence
+ --   0 relation: Rel A
+ --   reflexive : (x       : A) -> relation x x
+ --   symmetric : (x, y    : A) -> relation x y -> relation y x
+ --   transitive: (x, y, z : A) -> relation x y -> relation y z
+ --                             -> relation x z
 ```
 We equip the built-in relation `Equal` with the structure of an equivalence
 relation, using the constructor `Refl` and the stdlib functions `sym`, and
 `trans`:
 ```idris
-EqualEquivalence : Equivalence a
-EqualEquivalence = MkEquivalence
-  { relation = (===)
-  , reflexive = \x => Refl
-  , symmetric = \x,y,x_eq_y => sym x_eq_y
-  , transitive = \x,y,z,x_eq_y,y_eq_z => trans x_eq_y y_eq_z
-  }
+ -- EqualEquivalence : Equivalence a
+ -- EqualEquivalence = MkEquivalence
+ --   { relation = (===)
+ --   , reflexive = \x => Refl
+ --   , symmetric = \x,y,x_eq_y => sym x_eq_y
+ --   , transitive = \x,y,z,x_eq_y,y_eq_z => trans x_eq_y y_eq_z
+ --   }
 ```
 ```idris hide
-%hide Tutorial.EqualEquivalence
+ -- %hide Tutorial.Hidden.Equivalence
+ -- %hide Tutorial.Hidden.EqualEquivalence
+ --%unhide Data.Relation.Equivalence.Equivalence
 ```
 
 We'll use the following relation on pairs of natural numbers as a running
 example. We can represent an integer as the difference between a pair of natural
 numbers:
 ```idris
-infix 8 .-.
+private infix 8 .-.
 
 record INT where
   constructor (.-.)
@@ -177,6 +196,13 @@ The relation `SameDiff` is an equivalence relation. The proofs are
 straightforward, and a good opportunity to practice Idris's equational
 reasoning combinators from `Syntax.PreorderReasoning`:
 ```idris
+foo : Nat
+foo = let
+  baz : Setoid
+  baz = Inductive.VectSetoid 3 (cast Nat)
+  0 q := baz.equivalence.relation ?h081 ?h83
+ in ?meh
+
 SameDiffEquivalence : Equivalence INT
 SameDiffEquivalence = MkEquivalence
   { relation = SameDiff
@@ -208,10 +234,13 @@ Lets continue to construct the equivalence relation over `SameDiff`:
   , transitive = \x,y,z,x_eq_y,y_eq_z => Check $ plusRightCancel _ _ y.pos
       $ Calc $
       |~ x.pos + z.neg + y.pos
-      ~~ x.pos + (y.pos + z.neg) ...(solve 3 Monoid.Commutative.Free.Free
-                                     {a = Nat.Additive} $
+      ~~ x.pos + (y.pos + z.neg) ...(
+        let u = solve 3 Monoid.Commutative.Free.Free
+                                     {a = Nat.Additive}   {prf = ?aRefl}
+                                     $
                                      (X 0 .+. X 1) .+. X 2
-                                  =-= X 0 .+. (X 2 .+. X 1))
+                                  =-= X 0 .+. (X 2 .+. X 1)
+        in ?h189171)
       ~~ x.pos + (z.pos + y.neg) ...(cong (x.pos +) $ y_eq_z.same)
       ~~ (x.pos + y.neg) + z.pos ...(?h02{-solve 3 Monoid.Commutative.Free.Free
                                      {a = Nat.Additive} $
@@ -223,6 +252,7 @@ Lets continue to construct the equivalence relation over `SameDiff`:
                                      (X 0 .+. X 1) .+. X 2
                                  =-= (X 2 .+. X 1) .+. X 0-})
   }
+{-
 ```
 This proof is more involved:
 
@@ -744,7 +774,7 @@ toINTisAddHomo :
 To show it, we'll follow the definition of `toINT`, first show that
 `ANat_Plus_NegS` is compatible:
 ```idris
-compatibleANAT_Plus_NegS : (k1,k2,j1,j1 : Nat) ->
+compatibleANAT_Plus_NegS : (k1,k2,j1,j2 : Nat) ->
   ?IamHERE --toINT (ANat_Plus_NegS (k1 + k2) (1 + j1 + j2))
 
 
